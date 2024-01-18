@@ -1,6 +1,6 @@
 import {ajax} from "discourse/lib/ajax";
-import {cook} from "discourse/lib/text";
 import {withPluginApi} from "discourse/lib/plugin-api";
+import {cook} from "discourse/lib/text";
 
 let updateReviewable = data => {
   let reviewableId = data.reviewable_id;
@@ -16,13 +16,19 @@ let updateReviewable = data => {
   }
 
   if (reviewableKey !== null && reviewableItems[reviewableKey]) {
-    ajax(`/updated-reviewable/${reviewableId}`)
-      .then(async (response) => {
-        if (response?.reviewable_queued_post?.payload?.raw) {
-          let reviewableBody = reviewableItems[reviewableKey].querySelector('.post-body div');
-          reviewableBody.innerHTML = await cook(response.reviewable_queued_post.payload.raw);
-        }
-      });
+    if (data.action === 'edit'){
+      ajax(`/updated-reviewable/${reviewableId}`)
+        .then(async (response) => {
+          if (response?.reviewable_queued_post?.payload?.raw) {
+            let reviewableBody = reviewableItems[reviewableKey].querySelector('.post-body div');
+            reviewableBody.innerHTML = await cook(response.reviewable_queued_post.payload.raw);
+          }
+        });
+    }
+    if (data.action === 'delete'){
+      reviewableMapItems[reviewableKey].remove();
+      reviewableItems[reviewableKey].remove();
+    }
   }
 };
 
