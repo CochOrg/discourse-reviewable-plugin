@@ -55,19 +55,19 @@ export default {
     });
 
     let userControllerService = container.lookup("controller:user");
-
-    messageBusService.subscribe(`/user-messages/${userControllerService.currentUser.id}`, data => {
-      if (data.action === 'show_edited_topic_reviewable_modal'){
-
-        ajax(`/updated-reviewable/${data.reviewable_id}`)
-          .then(async (response) => {
-            if (response?.reviewable_queued_post?.payload?.raw) {
-              let cookedText = await cook(response.reviewable_queued_post.payload.raw);
-              let modalService = container.lookup("service:modal");
-              modalService.show(MyModal, { model: { text: cookedText}});
-            }
-          });
-      }
-    });
+    if (userControllerService?.currentUser?.id){
+      messageBusService.subscribe(`/user-messages/${userControllerService.currentUser.id}`, data => {
+        if (data.action === 'show_edited_topic_reviewable_modal'){
+          ajax(`/updated-reviewable/${data.reviewable_id}`)
+              .then(async (response) => {
+                if (response?.reviewable_queued_post?.payload?.raw) {
+                  let cookedText = await cook(response.reviewable_queued_post.payload.raw);
+                  let modalService = container.lookup("service:modal");
+                  modalService.show(MyModal, { model: { text: cookedText}});
+                }
+              });
+        }
+      });
+    }
   }
 };
