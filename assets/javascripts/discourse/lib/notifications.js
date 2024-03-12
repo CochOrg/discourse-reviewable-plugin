@@ -14,7 +14,7 @@ class PushNotifications {
           notificationItem.remove();
         }, 300);
       }
-    }, 1000000);
+    }, 10000);
 
   }
 
@@ -40,6 +40,9 @@ class PushNotifications {
 
   cutText(text){
     const maxLength = 30
+    if (text.length <= maxLength){
+      return text
+    }
     let trimmedString = text.substring(0, maxLength);
     return trimmedString.substring(0, Math.min(trimmedString.length, trimmedString.lastIndexOf(" "))) + '...'
   }
