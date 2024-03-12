@@ -1,7 +1,8 @@
 import {ajax} from "discourse/lib/ajax";
 import {withPluginApi} from "discourse/lib/plugin-api";
 import {cook} from "discourse/lib/text";
-import MyModal from "../components/new-reviewable-topic-modal";
+import NewReviewableTopicModal from "../components/new-reviewable-topic-modal";
+import PushNotifications from "../lib/notifications";
 
 let updateReviewable = data => {
   let reviewableId = data.reviewable_id;
@@ -38,6 +39,7 @@ export default {
   after: "message-bus",
 
   initialize(container) {
+    let notifications = new PushNotifications()
     let messageBusService = container.lookup("service:message-bus");
     withPluginApi("0.12.1", (api) => {
       api.onPageChange((url, title) => {
@@ -56,16 +58,38 @@ export default {
 
     let userControllerService = container.lookup("controller:user");
     if (userControllerService?.currentUser?.id){
-      messageBusService.subscribe(`/user-messages/${userControllerService.currentUser.id}`, data => {
-        if (data.action === 'show_edited_topic_reviewable_modal'){
+      messageBusService.subscribe(`/user-messages/${userControllerService.currentUser.id}`, async (data) => {
+        if (data.action === 'show_edited_topic_reviewable_modal') {
           ajax(`/updated-reviewable/${data.reviewable_id}`)
-              .then(async (response) => {
-                if (response?.reviewable_queued_post?.payload?.raw) {
-                  let cookedText = await cook(response.reviewable_queued_post.payload.raw);
-                  let modalService = container.lookup("service:modal");
-                  modalService.show(MyModal, { model: { text: cookedText}});
-                }
-              });
+            .then(async (response) => {
+              if (response?.reviewable_queued_post?.payload?.raw) {
+                let cookedText = await cook(response.reviewable_queued_post.payload.raw);
+                let modalService = container.lookup("service:modal");
+                modalService.show(NewReviewableTopicModal, {model: {text: cookedText}});
+              }
+            });
+        }
+
+        if (data.action === 'show_reviewable_published_modal') {
+          const topic = await ajax(`/t/${data.topic_id}.json`)
+          if (!topic?.title){
+            return
+          }
+
+          const post = await ajax(`/posts/${data.post_id}.json`)
+          if (!post?.raw){
+            return
+          }
+
+          const title = 'Your post has been published'
+          const topicName = topic.title
+          const postText = notifications.cutText(post.raw)
+          const link = window.location.origin + data.post_url
+          const text = `Ваше сообщение ${postText} в топике ${topicName} опубликовано: <a href="${link}">${link}</a>`
+
+          if (topicName && text){
+            notifications.insertNotificationItem(title, text)
+          }
         }
       });
     }
