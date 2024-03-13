@@ -24,7 +24,7 @@ module UpgradedReviewables
         iaJson = ActiveSupport::HashWithIndifferentAccess.new(json)
 
         if iaJson["action"].to_s == "create_post"
-          topic = Topic.find_by_id(manager_params[:topic_id])
+          topic = Topic.find_by_id(iaJson[:post][:topic_id])
           if topic.private_message?
 #             topic.allowed_users.each do |au|
 #               if au.username != "AIAssistant" && au.username != "Mediator" && au.id != current_user["id"]
