@@ -21,29 +21,23 @@ module UpgradedReviewables
             serialize_data(manager.perform, NewPostResultSerializer, root: false)
           end
 
-#         topic = Topic.find_by_id(manager_params[:topic_id])
-#         if topic.private_message?
-#           topic.allowed_users.each do |au|
-#             if au.username != "AIAssistant" && au.username != "Mediator" && au.id != current_user["id"]
-#               if is_api?
-#                 topic_id = json["post"]["topic_id"]
-#                 post_id = json["post"]["id"]
-#                 post_url = "/t/#{json["post"]["topic_slug"]}/#{json["post"]["topic_id"]}/#{json["post"]["post_number"]}"
-#               else
-#                 topic_id = json[:post][:topic_id]
-#                 post_id = json[:post][:id]
-#                 post_url = "/t/#{json[:post][:topic_slug]}/#{json[:post][:topic_id]}/#{json[:post][:post_number]}"
-#               end
-#
-#               MessageBus.publish("/user-messages/#{au.id}", {
-#                 action: 'show_new_private_message',
-#                 topic_id: topic_id,
-#                 post_id: post_id,
-#                 post_url: post_url,
-#               })
-#             end
-#           end
-#         end
+        iaJson = ActiveSupport::HashWithIndifferentAccess.new(json)
+
+        if iaJson["action"].to_s == "create_post"
+          topic = Topic.find_by_id(manager_params[:topic_id])
+          if topic.private_message?
+            topic.allowed_users.each do |au|
+              if au.username != "AIAssistant" && au.username != "Mediator" && au.id != current_user["id"]
+                MessageBus.publish("/user-messages/#{au.id}", {
+                  action: 'show_new_private_message',
+                  topic_id: iaJson[:post][:topic_id],
+                  post_id: iaJson[:post][:id],
+                  post_url: "/t/#{iaJson[:post][:topic_slug]}/#{iaJson[:post][:topic_id]}/#{iaJson[:post][:post_number]}",
+                })
+              end
+            end
+          end
+        end
 
         backwards_compatible_json(json)
       end
