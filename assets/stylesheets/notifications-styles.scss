@@ -23,12 +23,12 @@
 }
 
 .notification-item__title{
-  font-size: var(--font-up-2);
+  font-size: var(--font-up-1);
   font-weight: bold;
+  margin-bottom: 0.25em;
 }
 
 .notification-item__content{
-  margin-top: 0.25em;
   word-break: break-word;
 }
 

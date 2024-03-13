@@ -81,14 +81,13 @@ export default {
             return
           }
 
-          const title = 'Your post has been published'
           const topicName = topic.title
           const postText = notifications.cutText(post.raw)
           const link = window.location.origin + data.post_url
           const text = `Ваше сообщение "${postText}" опубликовано в топике <a href="${link}">"${topicName}"</a>`
-          if (topicName && text){
-            notifications.insertNotificationItem(title, text)
-          }
+
+          notifications.insertNotificationItem(text)
+
         }
 
         if (data.action === 'show_new_private_message') {
@@ -102,7 +101,7 @@ export default {
           const link = window.location.origin + data.post_url
           const text = `"${postText}" <br><br> <a href="${link}">Перейти в диалог</a>`
 
-          notifications.insertNotificationItem(title, text)
+          notifications.insertNotificationItem(text, title)
         }
       });
     }

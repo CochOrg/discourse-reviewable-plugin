@@ -18,9 +18,9 @@ class PushNotifications {
   }
 
 
-  getNotificationItemBlock(title, text) {
+  getNotificationItemBlock(text, title = null) {
     const notificationItemHTML = `<div class="notification-item">
-      <div class="notification-item__title">${title}</div>
+      ${title ? `<div class="notification-item__title">${title}</div>` : ''}
       <div class="notification-item__content">${text}</div>
       <button class="notification-item__button-ok" type="button">
         <div class="notification-item__cross"></div>
