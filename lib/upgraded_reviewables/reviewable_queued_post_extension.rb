@@ -39,7 +39,7 @@ module UpgradedReviewables
         )
 
         MessageBus.publish("/user-messages/#{target_created_by.id}", {
-          action: 'show_reviewable_published_modal',
+          action: 'show_reviewable_published_message',
           topic_id: created_post.topic_id,
           post_id: created_post.id,
           post_url: created_post.url,

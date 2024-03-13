@@ -70,7 +70,7 @@ export default {
             });
         }
 
-        if (data.action === 'show_reviewable_published_modal') {
+        if (data.action === 'show_reviewable_published_message') {
           const topic = await ajax(`/t/${data.topic_id}.json`)
           if (!topic?.title){
             return
@@ -85,11 +85,24 @@ export default {
           const topicName = topic.title
           const postText = notifications.cutText(post.raw)
           const link = window.location.origin + data.post_url
-          const text = `Ваше сообщение ${postText} в топике ${topicName} опубликовано: <a href="${link}">${link}</a>`
-
+          const text = `Ваше сообщение "${postText}" опубликовано в топике <a href="${link}">"${topicName}"</a>`
           if (topicName && text){
             notifications.insertNotificationItem(title, text)
           }
+        }
+
+        if (data.action === 'show_new_private_message') {
+          const post = await ajax(`/posts/${data.post_id}.json`)
+          if (!post?.raw){
+            return
+          }
+
+          const title = 'Новое сообщение от AI-ассистента или медиатора'
+          const postText = notifications.cutText(post.raw)
+          const link = window.location.origin + data.post_url
+          const text = `"${postText}" <br><br> <a href="${link}">Перейти в диалог</a>`
+
+          notifications.insertNotificationItem(title, text)
         }
       });
     }
