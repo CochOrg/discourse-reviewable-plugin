@@ -74,3 +74,11 @@
 .notification-item__cross:after {
   transform: rotate(-45deg);
 }
+
+.reviewable-item .post-contents-wrapper{
+  margin-bottom: 15px;
+}
+
+.reviewable-item .post-contents-wrapper a{
+  text-decoration: underline;
+}
