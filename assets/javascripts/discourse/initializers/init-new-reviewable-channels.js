@@ -1,7 +1,7 @@
 import {ajax} from "discourse/lib/ajax";
 import {withPluginApi} from "discourse/lib/plugin-api";
 import {cook} from "discourse/lib/text";
-import NewReviewableTopicModal from "../components/new-reviewable-topic-modal";
+import NewReviewableModal from "../components/new-reviewable-modal";
 import PushNotifications from "../lib/notifications";
 
 let updateReviewable = data => {
@@ -59,15 +59,19 @@ export default {
     let userControllerService = container.lookup("controller:user");
     if (userControllerService?.currentUser?.id){
       messageBusService.subscribe(`/user-messages/${userControllerService.currentUser.id}`, async (data) => {
-        if (data.action === 'show_edited_topic_reviewable_modal') {
-          ajax(`/updated-reviewable/${data.reviewable_id}`)
-            .then(async (response) => {
-              if (response?.reviewable_queued_post?.payload?.raw) {
-                let cookedText = await cook(response.reviewable_queued_post.payload.raw);
-                let modalService = container.lookup("service:modal");
-                modalService.show(NewReviewableTopicModal, {model: {text: cookedText}});
-              }
-            });
+        if (data.action === 'show_new_reviewable_modal') {
+          const response = await ajax(`/updated-reviewable/${data.reviewable_id}`)
+          if (response?.reviewable_queued_post?.payload?.raw) {
+            let cookedText = await cook(response.reviewable_queued_post.payload.raw);
+
+            const temp = document.createElement('div')
+            temp.insertAdjacentHTML('afterbegin', cookedText)
+            const bElements = temp.querySelectorAll('b')
+            const lastBText  = bElements[bElements.length - 1]
+
+            let modalService = container.lookup("service:modal");
+            modalService.show(NewReviewableModal, {model: {text: lastBText}});
+          }
         }
 
         if (data.action === 'show_reviewable_published_message') {
@@ -88,7 +92,6 @@ export default {
           const text = `Ваше сообщение "${postText}" опубликовано в топике <a href="${link}">"${topicName}"</a>`
 
           notifications.insertNotificationItem(text, title)
-
         }
 
         if (data.action === 'show_new_private_message') {
