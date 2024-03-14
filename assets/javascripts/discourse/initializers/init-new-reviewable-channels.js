@@ -81,12 +81,13 @@ export default {
             return
           }
 
+          const title = 'Ваш пост опубликован'
           const topicName = topic.title
           const postText = notifications.cutText(post.raw)
           const link = window.location.origin + data.post_url
           const text = `Ваше сообщение "${postText}" опубликовано в топике <a href="${link}">"${topicName}"</a>`
 
-          notifications.insertNotificationItem(text)
+          notifications.insertNotificationItem(text, title)
 
         }
 

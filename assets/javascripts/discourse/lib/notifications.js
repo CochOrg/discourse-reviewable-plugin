@@ -7,14 +7,14 @@ class PushNotifications {
 
     notificationsBlock.insertAdjacentElement('afterbegin', notificationItem)
 
-    setTimeout(function() {
-      if (notificationItem){
-        notificationItem.style.opacity = 0;
-        setTimeout(function() {
-          notificationItem.remove();
-        }, 300);
-      }
-    }, 10000);
+    // setTimeout(function() {
+    //   if (notificationItem){
+    //     notificationItem.style.opacity = 0;
+    //     setTimeout(function() {
+    //       notificationItem.remove();
+    //     }, 300);
+    //   }
+    // }, 10000);
   }
 
 
