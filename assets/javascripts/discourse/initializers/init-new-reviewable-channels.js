@@ -52,6 +52,7 @@ export default {
         let topic = topicController.get('model');
         if (topic) {
           messageBusService.subscribe(`/reviewable-update/${topic.get('id')}`, updateReviewable);
+          notifications.removeNotificationsByLink(`/t/${topic.get('slug')}/${topic.get('id')}`)
         }
       });
     });
@@ -88,8 +89,8 @@ export default {
           const title = 'Ваш пост опубликован'
           const topicName = topic.title
           const postText = notifications.cutText(post.raw)
-          const link = window.location.origin + data.post_url
-          const text = `Ваше сообщение "${postText}" опубликовано в топике <a href="${link}">"${topicName}"</a>`
+          const link = data.post_url
+          const text = `Ваше сообщение "${postText}" опубликовано в топике <a class="notification-item__link" href="${link}">"${topicName}"</a>`
 
           notifications.insertNotificationItem(text, title)
         }
@@ -102,8 +103,8 @@ export default {
 
           const title = 'Новое сообщение от AI-ассистента или медиатора'
           const postText = notifications.cutText(post.raw)
-          const link = window.location.origin + data.post_url
-          const text = `"${postText}" <br><br> <a href="${link}">Перейти в диалог</a>`
+          const link = data.post_url
+          const text = `${postText} <br><br> <a class="notification-item__link" href="${link}">Перейти в диалог</a>`
 
           notifications.insertNotificationItem(text, title)
         }

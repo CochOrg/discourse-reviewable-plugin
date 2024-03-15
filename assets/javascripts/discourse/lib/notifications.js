@@ -32,19 +32,34 @@ class PushNotifications {
 
   initNotificationItemEvents(notificationItem){
     let okBtn = notificationItem.querySelector('.notification-item__button-ok')
-    okBtn.addEventListener('click', () => {
+    let link = notificationItem.querySelector('.notification-item__link')
+    okBtn?.addEventListener('click', () => {
       notificationItem.remove()
+    })
+    link?.addEventListener('click', () => {
+      setTimeout(() => {
+        notificationItem.remove()
+      }, 1)
     })
   }
 
   cutText(text){
     const maxLength = 50
+    text = text.replace('\n', ' ').replace('  ', ' ')
     if (text.length <= maxLength){
       return text
     }
     let trimmedString = text.substring(0, maxLength);
     return trimmedString.substring(0, Math.min(trimmedString.length, trimmedString.lastIndexOf(" "))) + '...'
   }
+
+  removeNotificationsByLink(linkPart){
+    const links = document.querySelectorAll(`.notifications-block .notification-item__link[href*="${linkPart}"]`)
+    links.forEach(link => {
+      link.closest('.notification-item')?.remove()
+    })
+  }
+
 }
 
 export default PushNotifications
