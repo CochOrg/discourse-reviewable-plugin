@@ -67,7 +67,7 @@ export default {
             const temp = document.createElement('div')
             temp.insertAdjacentHTML('afterbegin', cookedText)
             const bElements = temp.querySelectorAll('b')
-            const lastBText  = bElements[bElements.length - 1]
+            const lastBText  = bElements[bElements.length - 1] ?? ''
 
             let modalService = container.lookup("service:modal");
             modalService.show(NewReviewableModal, {model: {text: lastBText}});
