@@ -110,5 +110,20 @@ export default {
         }
       });
     }
+
+    // Event for GA
+    document.addEventListener('mousedown', e => {
+      const closestCreateBtn = e.target.closest('button.create')
+      if (!closestCreateBtn || !closestCreateBtn.closest('#reply-control')){
+        return
+      }
+
+      const buttonSpan = closestCreateBtn.querySelector('.d-button-label')
+      if (!buttonSpan){
+        return;
+      }
+      buttonSpan.classList.remove('d-button-label')
+      buttonSpan.classList.add('d-button-label-success')
+    })
   }
 };
