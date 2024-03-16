@@ -45,7 +45,7 @@ class PushNotifications {
 
   cutText(text){
     const maxLength = 50
-    text = text.replace('\n', ' ').replace('  ', ' ')
+    text = text.replace('\n', ' ').replace('<br>', ' ').replace('  ', ' ')
     if (text.length <= maxLength){
       return text
     }
