@@ -23,7 +23,10 @@ module UpgradedReviewables
 
         iaJson = ActiveSupport::HashWithIndifferentAccess.new(json)
 
-        if iaJson[:action].to_s == "create_post" && !(iaJson[:post][:username] == "AIAssistant" && iaJson[:post][:post_number] == 1)
+        print '11111111111'
+        print iaJson
+
+        if !iaJson[:errors].present? && iaJson[:action].to_s == "create_post" && !(iaJson[:post][:username] == "AIAssistant" && iaJson[:post][:post_number] == 1)
           topic = Topic.find_by_id(iaJson[:post][:topic_id])
           if !topic.nil? && topic.private_message?
             topic.allowed_users.each do |au|
