@@ -114,7 +114,7 @@ export default {
     // Event for GA
     document.addEventListener('mousedown', e => {
       const closestCreateBtn = e.target.closest('button.create')
-      const replyControl = closestCreateBtn.closest('#reply-control')
+      const replyControl = closestCreateBtn?.closest('#reply-control')
       if (!closestCreateBtn || !replyControl){
         return
       }
