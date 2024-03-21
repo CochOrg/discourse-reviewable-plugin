@@ -114,7 +114,8 @@ export default {
     // Event for GA
     document.addEventListener('mousedown', e => {
       const closestCreateBtn = e.target.closest('button.create')
-      if (!closestCreateBtn || !closestCreateBtn.closest('#reply-control')){
+      const replyControl = closestCreateBtn.closest('#reply-control')
+      if (!closestCreateBtn || !replyControl){
         return
       }
 
@@ -122,8 +123,11 @@ export default {
       if (!buttonSpan){
         return;
       }
+
       buttonSpan.classList.remove('d-button-label')
-      buttonSpan.classList.add('d-button-label-success')
+      replyControl.querySelector('#reply-title')
+          ? buttonSpan.classList.add('button-create-topic-success')
+          : buttonSpan.classList.add('d-button-label-success')
     })
   }
 };
