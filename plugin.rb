@@ -4,7 +4,7 @@
 # authors: Awesome Plugin Developer
 # url: https://github.com/CochOrg/discourse-reviewable-plugin
 
-register_asset "stylesheets/notifications-styles.scss"
+register_asset "stylesheets/reviewables-styles.scss"
 
 after_initialize do
   module ::UpgradedReviewables
@@ -17,14 +17,10 @@ after_initialize do
 
   %w[
     lib/upgraded_reviewables/reviewables_controller_extension.rb
-    lib/upgraded_reviewables/reviewable_queued_post_extension.rb
-    lib/upgraded_reviewables/posts_controller_extension.rb
   ].each { |path| require_relative path }
 
   reloadable_patch do
     ReviewablesController.class_eval { prepend UpgradedReviewables::ReviewablesControllerExtension }
-    ReviewableQueuedPost.class_eval { prepend UpgradedReviewables::ReviewableQueuedPostExtension }
-    PostsController.class_eval { prepend UpgradedReviewables::PostsControllerExtension }
   end
 
   Discourse::Application.routes.append do

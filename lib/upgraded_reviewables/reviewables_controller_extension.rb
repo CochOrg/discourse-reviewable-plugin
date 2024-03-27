@@ -38,12 +38,6 @@ module UpgradedReviewables
               reviewable_id: reviewable.id
             })
           end
-          if reviewable.version == 1
-            MessageBus.publish("/user-messages/#{reviewable.target_created_by_id}", {
-              action: 'show_new_reviewable_modal',
-              reviewable_id: reviewable.id,
-            })
-          end
           render json: result
         else
           render_json_error(reviewable.errors)
